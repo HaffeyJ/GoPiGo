@@ -129,7 +129,7 @@ tina = Pigo()
 while True:
     if tina.checkDist():
         tina.safeDrive()
-    tina.servoSweep()
+        tina.servoSweep()
     if tina.isAPath():
         tina.turnTo(tina.smartChoice())
     else:
