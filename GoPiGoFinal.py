@@ -9,7 +9,7 @@ class Pigo:
     ##### Basic status and methods
     #####
 
-    status = {"ismoving" : False, "servo" : 90, "leftspeed" : 175, "rightspeed" : 175, "dist": 100}
+    status = {"ismoving" : False, "servo" : 90, "leftspeed" : 175, "rightspeed" : 175, "dist": 100, 'wentleft': True}
     vision = [None] * 180
     STEPPER = 5
 
@@ -17,11 +17,13 @@ class Pigo:
     def __init__(self):
         print "I am alive. Beep beep."
         self.status["dist"] = us_dist(15)
+
     def stop(self):
         self.status["ismoving"] = False
         for x in range(3):
             stop()
             print "Halt!"
+
     def fwd(self):
         self.status ["ismoving"] = True
         for x in range(3):
