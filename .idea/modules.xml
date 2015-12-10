@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/GoPiGo.iml" filepath="$PROJECT_DIR$/.idea/GoPiGo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Pigo-adiletta/.idea/Pigo-adiletta.iml" filepath="$PROJECT_DIR$/../Pigo-adiletta/.idea/Pigo-adiletta.iml" />
     </modules>
   </component>
 </project>

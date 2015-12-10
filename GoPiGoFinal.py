@@ -11,11 +11,12 @@ class Pigo:
 
     status = {"ismoving" : False, "servo" : 90, "leftspeed" : 175, "rightspeed" : 175, "dist": 100}
     vision = [None] * 180
+    STEPPER = 5
 
 
     def __init__(self):
         print "I am alive. Beep beep."
-        self.status["dist"] = us_dist(20)
+        self.status["dist"] = us_dist(15)
     def stop(self):
         self.status["ismoving"] = False
         for x in range(3):
@@ -51,13 +52,15 @@ class Pigo:
             return True
 
     def checkDist(self):
-        self.status['dist'] = us_dist(20)
+        self.status['dist'] = us_dist(15)
         print "Obstruction detected " + str(self.status["dist"]) + "mm away"
         if self.status['dist'] < STOP_DIST:
             return False
         else:
             return True
 
+    def servoPos(self):
+        servo(90)
     #########
     ##### Complex methods
     #####
@@ -69,7 +72,7 @@ class Pigo:
         self.stop()
 
     def servoSweep(self):
-        for ang in range(20,160,5):
+        for ang in range(20,160,self.STEPPER):
             servo(ang)
             time.sleep(.1)
             self.vision[ang] = us_dist(15)
@@ -85,13 +88,13 @@ class Pigo:
         self.stop()
 
     def isAPath(self):
-        for ang in range(10, 160, 5):
+        for ang in range(10, 160, self.STEPPER):
             counter = 0
             if self.vision[ang] > 20:
                 counter += 5
             else:
                 counter = 0
-            if counter == 20:
+            if counter >= 20/self.STEPPER:
                 return True
         return False
 
@@ -114,16 +117,45 @@ class Pigo:
 
 
     def smartChoice(self):
-        angle = 90
-        return angle
+        counter = 0
+        option = [0] * 12 #we're going to fill this array with the angles of open paths
+        optindex = 0  #this starts at 0 and will increase every time we find an option
+        for ang in range(20, 160, self.STEPPER):
+            if self.vision[ang] > STOP_DIST:
+                counter += 1
+            else:
+                counter = 0
+            if counter >= (20/self.STEPPER):
+                print "We've found an option at angle " + str(ang - 10)
+                option[optindex] = (ang - 10)
+                counter = 0
+                optindex += 1
+        if self.status['wentleft']:
+            print "I went left last time. Seeing if I have a right turn option"
+            for choice in option:
+                if choice < 90:
+                    self.status['wentleft'] = False #switch this for next time
+                    return choice
+        else:
+            print "Went right last time. Seeing if there's a left turn option"
+            for choice in option:
+                if choice > 90:
+                    self.status['wentleft'] = True
+                    return choice
+        print "I couldn't turn the direction I wanted. Goint to use angle " + str(option[0])
+        if option[0] != 0: #let's make sure there's something in there
+            return option[0]
+        print "If I print this line I couldn't find an angle. How'd I get this far?"
+        return 90
+
 
 
     def turnAround(self):
         return "Turn Around"
 
-        #####
-        ##### Main app starts here
-        #####
+#####
+##### Main app starts here
+#####
 tina = Pigo()
 #tina.RUNPROGRAM
 while True:
