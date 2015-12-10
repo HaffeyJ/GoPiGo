@@ -52,8 +52,10 @@ class Pigo:
             return True
 
     def checkDist(self):
+        servo(90)
+        time.sleep(.1)
         self.status['dist'] = us_dist(15)
-        print "Obstruction detected " + str(self.status["dist"]) + "mm away"
+        print "Obstruction detected " + str(self.status['dist']) + "mm away"
         if self.status['dist'] < STOP_DIST:
             return False
         else:
@@ -161,8 +163,9 @@ tina = Pigo()
 while True:
     if tina.checkDist():
         tina.safeDrive()
-        tina.servoSweep()
-    if tina.isAPath():
-        tina.turnTo(tina.smartChoice())
     else:
-        tina.turnAround()
+        tina.servoSweep()
+        if tina.isAPath():
+            tina.turnTo(tina.smartChoice())
+        else:
+            tina.turnAround()
